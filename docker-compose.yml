@@ -1,0 +1,7 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment: { POSTGRES_USER: smeny, POSTGRES_PASSWORD: smeny, POSTGRES_DB: smeny }
+    ports: ["5432:5432"]
+    volumes: ["smeny_data:/var/lib/postgresql/data"]
+volumes: { smeny_data: {} }

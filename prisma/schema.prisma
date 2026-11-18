@@ -1,0 +1,220 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum SystemRole {
+  EMPLOYEE
+  MANAGER
+  ADMIN
+}
+
+enum AccountStatus {
+  PENDING
+  ACTIVE
+  REJECTED
+  DISABLED
+}
+
+enum ShiftStatus {
+  DRAFT
+  PUBLISHED
+  CANCELLED
+}
+
+enum SegmentType {
+  WORK
+  BREAK
+}
+
+model User {
+  id                 String            @id @default(cuid())
+  email              String            @unique
+  passwordHash       String
+  firstName          String
+  lastName           String
+  role               SystemRole        @default(EMPLOYEE)
+  status             AccountStatus     @default(PENDING)
+  isPrimaryAdmin     Boolean            @default(false)
+  expectedHours      Float              @default(40)
+  branchId           String?
+  branch             Branch?           @relation(fields: [branchId], references: [id])
+  defaultWorkplaceId String?
+  defaultWorkplace   Workplace?        @relation(fields: [defaultWorkplaceId], references: [id])
+  positions          UserJobPosition[]
+  shifts             Shift[]
+  sessions           Session[]
+  notifications      Notification[]
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+
+  @@index([status, role])
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  tokenHash String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
+model Branch {
+  id         String         @id @default(cuid())
+  name       String
+  code       String         @unique
+  timezone   String         @default("Europe/Prague")
+  users      User[]
+  workplaces Workplace[]
+  shifts     Shift[]
+  rules      CoverageRule[]
+}
+
+model Workplace {
+  id       String         @id @default(cuid())
+  name     String
+  code     String
+  color    String
+  branchId String
+  branch   Branch         @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  users    User[]
+  segments ShiftSegment[]
+  rules    CoverageRule[]
+
+  @@unique([branchId, code])
+}
+
+model JobPosition {
+  id           String            @id @default(cuid())
+  name         String            @unique
+  shortCode    String            @unique
+  isLeadership Boolean           @default(false)
+  users        UserJobPosition[]
+  shifts       Shift[]
+  rules        CoverageRule[]
+}
+
+model UserJobPosition {
+  userId     String
+  positionId String
+  isPrimary  Boolean     @default(false)
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  position   JobPosition @relation(fields: [positionId], references: [id])
+
+  @@id([userId, positionId])
+}
+
+model WorkPattern {
+  id        String   @id @default(cuid())
+  name      String
+  type      String
+  config    Json
+  userId    String?
+  createdAt DateTime @default(now())
+}
+
+model Shift {
+  id           String         @id @default(cuid())
+  startsAt     DateTime
+  endsAt       DateTime
+  breakMinutes Int            @default(0)
+  status       ShiftStatus    @default(DRAFT)
+  note         String?
+  userId       String
+  user         User           @relation(fields: [userId], references: [id])
+  branchId     String
+  branch       Branch         @relation(fields: [branchId], references: [id])
+  positionId   String
+  position     JobPosition    @relation(fields: [positionId], references: [id])
+  segments     ShiftSegment[]
+  createdById  String
+  updatedById  String
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+
+  @@index([startsAt, status])
+  @@index([userId, startsAt])
+}
+
+model ShiftSegment {
+  id          String       @id @default(cuid())
+  shiftId     String
+  shift       Shift        @relation(fields: [shiftId], references: [id], onDelete: Cascade)
+  startsAt    DateTime
+  endsAt      DateTime
+  type        SegmentType  @default(WORK)
+  workplaceId String?
+  workplace   Workplace?   @relation(fields: [workplaceId], references: [id])
+
+  @@index([shiftId, startsAt])
+}
+
+model ShiftTemplate {
+  id           String   @id @default(cuid())
+  name         String
+  startTime    String
+  endTime      String
+  breakMinutes Int
+  segments     Json
+  branchId     String
+  createdAt    DateTime @default(now())
+}
+
+model CoverageRule {
+  id          String       @id @default(cuid())
+  name        String
+  branchId    String
+  branch      Branch       @relation(fields: [branchId], references: [id])
+  workplaceId String?
+  workplace   Workplace?   @relation(fields: [workplaceId], references: [id])
+  positionId  String?
+  position    JobPosition? @relation(fields: [positionId], references: [id])
+  dayOfWeek   Int?
+  startTime   String
+  endTime     String
+  minimum     Int
+  active      Boolean      @default(true)
+}
+
+model Notification {
+  id        String    @id @default(cuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      String
+  title     String
+  body      String
+  readAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId, readAt])
+}
+
+model NotificationPreference {
+  id     String  @id @default(cuid())
+  userId String
+  type   String
+  inApp  Boolean @default(true)
+  email  Boolean @default(true)
+
+  @@unique([userId, type])
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  actorId    String?
+  entityType String
+  entityId   String
+  action     String
+  before     Json?
+  after      Json?
+  ipAddress  String?
+  createdAt  DateTime @default(now())
+
+  @@index([entityType, entityId])
+  @@index([createdAt])
+}

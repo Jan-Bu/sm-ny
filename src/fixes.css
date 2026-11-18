@@ -1,0 +1,425 @@
+/* Legend labels must never inherit the absolute positioning of real shift cards. */
+.cell-legend .shift {
+  position: static;
+  left: auto;
+  width: auto;
+  min-width: 0;
+  height: auto;
+  display: inline-block;
+  padding: 4px 7px;
+  overflow: visible;
+  background: #dff5e6;
+  color: #176a3b;
+  border: 0;
+  box-shadow: none;
+  transform: none;
+}
+
+/* True dark theme: black canvas, anthracite surfaces and neutral gray borders. */
+.app.dark {
+  filter: none;
+  color: #e7e7e7;
+  background: #090a0a;
+  color-scheme: dark;
+}
+
+.dark main,
+.dark .page-content {
+  background: #090a0a;
+}
+
+.dark aside {
+  color: #ededed;
+  background: #0d0f0e;
+  border-right: 1px solid #292c2a;
+}
+
+.dark .branch,
+.dark nav button.active,
+.dark nav button:hover {
+  background: #202321;
+  border-color: #353936;
+}
+
+.dark header,
+.dark .panel,
+.dark .summary-grid article,
+.dark .schedule,
+.dark .available-employees,
+.dark .visual-planner .employee-palette,
+.dark .monthly-planner,
+.dark .modal {
+  color: #e8e8e8;
+  background: #171918;
+  border-color: #303431;
+  box-shadow: 0 8px 28px #0008;
+}
+
+.dark header {
+  border-bottom-color: #303330;
+}
+
+.dark header p,
+.dark .panel-head p,
+.dark .summary-grid span,
+.dark .summary-grid small,
+.dark .team-list small,
+.dark .today-list small,
+.dark .person small,
+.dark .available-heading small,
+.dark .available-person small,
+.dark .month-toolbar p,
+.dark .settings-form label small {
+  color: #a1a5a2;
+}
+
+.dark button,
+.dark input,
+.dark textarea,
+.dark select,
+.dark .search,
+.dark .date-picker {
+  color: #e5e5e5;
+  background-color: #242725;
+  border-color: #3a3e3b;
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: #858a86;
+}
+
+.dark .toolbar,
+.dark .metrics,
+.dark .metrics > div {
+  background: #090a0a;
+}
+
+.dark .metrics > div {
+  color: #e5e5e5;
+  background: #171918;
+  border-color: #303431;
+  box-shadow: 0 4px 14px #0006;
+}
+
+.dark .gridhead,
+.dark .group,
+.dark .coverage,
+.dark .month-head,
+.dark .month-head > b,
+.dark .month-row > div {
+  color: #dfe1df;
+  background: #202321;
+  border-color: #363a37;
+}
+
+.dark .gridhead .today {
+  color: #a6e8bd;
+  background: #26352c;
+}
+
+.dark .row,
+.dark .cell,
+.dark .employee,
+.dark .person {
+  background-color: #151716;
+  border-color: #2c302d;
+}
+
+.dark .cell {
+  background-image: linear-gradient(90deg, transparent 49.5%, #292c2a 50%, transparent 50.5%);
+}
+
+.dark .coverage,
+.dark .coverage .day-coverage {
+  background: #1b1d1c;
+  border-color: #303431;
+}
+
+.dark .hours-editor,
+.dark .timeoff-card,
+.dark .available-role,
+.dark .available-role > header,
+.dark .drag-person,
+.dark .drop-day,
+.dark .drop-day > header,
+.dark .planned-card,
+.dark .notification-list > button,
+.dark .warning-list li {
+  color: #dedfde;
+  background: #232624;
+  border-color: #3a3e3b;
+}
+
+.dark .drop-day.drag-over {
+  background: #26342c;
+  border-color: #6ba57e;
+}
+
+.dark .drop-hint,
+.dark .team-list > div,
+.dark .today-list > button,
+.dark .settings-form > label,
+.dark .employee-table > div {
+  border-color: #303431;
+}
+
+.dark .today-list > button:hover,
+.dark .notification-list > button.read {
+  background: #1d201e;
+}
+
+.dark .employee-table .table-head,
+.dark .range-tabs {
+  color: #c5c8c6;
+  background: #242725;
+}
+
+.dark .range-tabs button.active {
+  color: #f1f1f1 !important;
+  background: #444844 !important;
+}
+
+.dark .month-cell.shift { color: #bfeacc; background: #24402e; }
+.dark .month-cell.empty { color: #f2b6b6; background: #472727; }
+.dark .month-cell.vacation { color: #f6dd80; background: #4d4424; }
+.dark .month-cell.sick,
+.dark .month-cell.other { color: #b9cff4; background: #29384f; }
+.dark .month-cell.training { color: #d7c3f6; background: #3c3050; }
+
+.dark .sheet-editor {
+  color: #e8e8e8;
+  background: #202321;
+  border-color: #444844;
+  box-shadow: 0 18px 50px #000c;
+}
+
+.dark .planning-intro,
+.dark .today-hero {
+  background: linear-gradient(135deg, #111312, #343836);
+  border: 1px solid #404440;
+}
+
+.dark .toast {
+  color: #fff;
+  background: #303431;
+  border: 1px solid #515652;
+}
+
+.dark .overlay {
+  background: #000c;
+}
+
+/* Alignment and responsive hardening after desktop/mobile visual review. */
+.person {
+  display: grid;
+  grid-template-columns: 36px minmax(0, 1fr) auto;
+  align-content: center;
+}
+
+.person > div {
+  overflow: hidden;
+}
+
+.person > div > b {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.person > div > small {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  overflow: hidden;
+}
+
+.person .employment-type {
+  max-width: 105px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.person .hours-editor {
+  margin-left: 2px;
+}
+
+.mobile-menu-backdrop {
+  display: none;
+}
+
+@media (max-width: 1100px) {
+  .toolbar {
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .toolbar > div:first-child {
+    flex-wrap: wrap;
+  }
+
+  .toolbar > div:last-child {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  .range-tabs {
+    order: 5;
+  }
+}
+
+@media (max-width: 800px) {
+  .app > aside {
+    display: flex;
+    width: min(82vw, 290px);
+    transform: translateX(-105%);
+    transition: transform 180ms ease;
+    box-shadow: 16px 0 40px #0007;
+  }
+
+  .app > aside.mobile-menu-open {
+    transform: translateX(0);
+  }
+
+  .mobile-menu-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 4;
+    display: block;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    background: #0009;
+    border: 0;
+  }
+
+  .toolbar {
+    display: grid;
+    gap: 10px;
+  }
+
+  .toolbar > div:first-child,
+  .toolbar > div:last-child {
+    display: flex;
+  }
+
+  .toolbar > div:last-child {
+    justify-content: flex-start;
+  }
+
+  .toolbar .search {
+    flex: 1 1 180px;
+  }
+
+  .toolbar .search input {
+    width: 100%;
+  }
+
+  .date-picker {
+    flex: 1;
+  }
+
+  .date-picker input {
+    width: 100%;
+  }
+
+  .range-tabs {
+    width: 100%;
+  }
+
+  .range-tabs button {
+    flex: 1;
+    justify-content: center;
+  }
+
+  .timeoff-toggle,
+  .publish {
+    flex: 1 1 auto;
+    justify-content: center;
+  }
+
+  .schedule {
+    overscroll-behavior-inline: contain;
+  }
+
+  .planning-mode-tabs {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .planning-mode-tabs button {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .visual-planner .employee-palette {
+    grid-template-columns: 1fr;
+  }
+
+  .employee-palette > div:first-child {
+    grid-column: auto;
+  }
+
+  .month-toolbar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .cell-legend {
+    width: 100%;
+  }
+
+  .sheet-editor {
+    position: fixed;
+    right: 12px;
+    bottom: 12px;
+    top: auto;
+    left: 12px;
+    width: auto;
+    max-height: calc(100vh - 24px);
+    overflow: auto;
+  }
+}
+
+@media (max-width: 520px) {
+  header {
+    padding-inline: 10px;
+  }
+
+  header h1 {
+    max-width: 145px;
+    overflow: hidden;
+    font-size: 18px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .summary-grid,
+  .metrics {
+    grid-template-columns: 1fr;
+  }
+
+  .metrics > div:nth-child(3) {
+    grid-column: auto;
+  }
+
+  .today-hero {
+    flex-direction: column;
+  }
+
+  .available-heading {
+    align-items: flex-start;
+  }
+
+  .toolbar .week > button:nth-child(4) {
+    display: none;
+  }
+
+  .timeoff-toggle {
+    flex-basis: 100%;
+  }
+
+  .settings-actions {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

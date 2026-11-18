@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="cs">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Směny — lokální náhled</title>
+    <link rel="stylesheet" href="src/style.css" />
+    <style>
+      .preview-days {
+        display: grid;
+        grid-template-columns: 220px repeat(7, minmax(150px, 1fr));
+        min-width: 1270px;
+      }
+      .preview-days > div {
+        padding: 12px;
+        border-right: 1px solid #e5ebe7;
+      }
+      .demo-card {
+        position: absolute;
+        left: 12%;
+        right: 9%;
+        top: 10px;
+        height: 50px;
+        border: 1px solid #55b57a;
+        border-radius: 7px;
+        background: #daf5e3;
+        color: #155b35;
+        padding: 7px;
+        text-align: left;
+      }
+      .demo-card b,
+      .demo-card small {
+        display: block;
+      }
+      .demo-card small {
+        font-size: 10px;
+      }
+      .cell {
+        min-height: 72px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <aside>
+        <div class="brand"><span>S</span><strong>Směny</strong></div>
+        <div class="branch">
+          <small>POBOČKA</small><b>Praha – Holešovice</b
+          ><span>Centrální prodejna</span>
+        </div>
+        <nav>
+          <button>Přehled</button><button class="active">▣ Rozpis směn</button
+          ><button>◷ Dnes</button><button>♙ Zaměstnanci</button
+          ><button>♢ Upozornění <em>4</em></button><button>⚙ Nastavení</button>
+        </nav>
+        <div class="user">
+          <span>JN</span>
+          <div><b>Jan Novák</b><small>Hlavní správce</small></div>
+        </div>
+      </aside>
+      <main>
+        <header>
+          <div>
+            <h1>Rozpis směn</h1>
+            <p>Středa 18. listopadu 2026 · lokální náhled</p>
+          </div>
+          <div class="actions">
+            <button class="icon" id="theme">◐</button
+            ><button class="primary" id="new">＋ Nová směna</button>
+          </div>
+        </header>
+        <section class="toolbar">
+          <div class="week">
+            <button>‹</button><button>▣ 16.–22. listopadu 2026</button
+            ><button>›</button><button>Dnes</button>
+          </div>
+          <div>
+            <label class="search"
+              >⌕ <input placeholder="Hledat zaměstnance" /></label
+            ><button class="publish" id="publish">
+              Zveřejnit změny <span>1</span>
+            </button>
+          </div>
+        </section>
+        <section class="metrics">
+          <div>
+            <span><small>PRODEJNA NYNÍ</small><b>5 lidí</b></span
+            ><em class="ok">Obsazeno</em>
+          </div>
+          <div>
+            <span><small>SKLAD NYNÍ</small><b>2 lidé</b></span
+            ><em class="warn">Minimum</em>
+          </div>
+          <div>
+            <span><small>KONTROLA TÝDNE</small><b>3 upozornění</b></span
+            ><em>Zkontrolovat</em>
+          </div>
+        </section>
+        <section class="schedule">
+          <div class="gridhead">
+            <div class="employee">ZAMĚSTNANEC</div>
+            <div>Po 16. 11.<small>3 předek · 2 sklad</small></div>
+            <div>Út 17. 11.<small>3 předek · 2 sklad</small></div>
+            <div class="today">St 18. 11.<small>3 předek · 2 sklad</small></div>
+            <div>Čt 19. 11.<small>2 předek · 2 sklad</small></div>
+            <div>Pá 20. 11.<small>3 předek · 2 sklad</small></div>
+            <div>So 21. 11.<small>1 předek · 0 sklad</small></div>
+            <div>Ne 22. 11.<small>1 předek · 0 sklad</small></div>
+          </div>
+          <div class="group">
+            <b>⌄ PRODEJNA / PŘEDEK</b><span>4 zaměstnanci</span>
+          </div>
+          <div id="front"></div>
+          <div class="group">
+            <b>⌄ SKLAD / ZÁZEMÍ</b><span>2 zaměstnanci</span>
+          </div>
+          <div id="warehouse"></div>
+        </section>
+      </main>
+      <div id="toast"></div>
+    </div>
+    <script>
+      const data = [
+        ["Tereza Novotná", "TN", "STL", "Krátký / dlouhý týden", [0, 1, 4]],
+        ["David Procházka", "DP", "TL", "Po–Pá", [0, 1, 2, 3, 4]],
+        ["Klára Jelínková", "KJ", "SS", "Po–Pá", [0, 1, 2, 3, 4]],
+        ["Matěj Svoboda", "MS", "BRIGÁDNÍK", "Nepravidelný", [2]],
+        ["Petra Horáková", "PH", "VS", "Po–Pá", [0, 1, 2, 3, 4]],
+        ["Adam Černý", "AČ", "SKLAD", "Po–Pá", [0, 1, 2, 3, 4]],
+      ];
+      function row(p, warehouse) {
+        let cells = "";
+        for (let d = 0; d < 7; d++)
+          cells += `<div class="cell">${p[4].includes(d) ? `<button class="demo-card"><b>${warehouse ? "8:00–16:00" : "9:00–17:00"}</b><small>${warehouse ? "Sklad / zázemí" : "Prodejna / předek"} · ${p[2]}</small></button>` : ""}</div>`;
+        return `<div class="row"><div class="employee person"><span>${p[1]}</span><div><b>${p[0]}</b><small><mark>${p[2]}</mark> ${p[3]}</small></div><em>40 / 40 h</em></div>${cells}</div>`;
+      }
+      document.querySelector("#front").innerHTML = data
+        .slice(0, 4)
+        .map((x) => row(x, false))
+        .join("");
+      document.querySelector("#warehouse").innerHTML = data
+        .slice(4)
+        .map((x) => row(x, true))
+        .join("");
+      function toast(t) {
+        let e = document.querySelector("#toast");
+        e.className = "toast";
+        e.textContent = "✓ " + t;
+        setTimeout(() => (e.className = ""), 2600);
+      }
+      document.querySelector("#publish").onclick = () =>
+        toast("Změny byly zveřejněny zaměstnancům.");
+      document.querySelector("#new").onclick = () =>
+        toast("Editor nové směny je připraven.");
+      document.querySelector("#theme").onclick = () =>
+        document.querySelector(".app").classList.toggle("dark");
+      document
+        .querySelectorAll(".demo-card")
+        .forEach((b) => (b.onclick = () => toast("Otevřen detail směny.")));
+    </script>
+  </body>
+</html>
